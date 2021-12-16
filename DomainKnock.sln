@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainKnock", "DomainKnock\DomainKnock.csproj", "{0AAB9D4B-ED14-4484-9298-5F1C31218E8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0AAB9D4B-ED14-4484-9298-5F1C31218E8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AAB9D4B-ED14-4484-9298-5F1C31218E8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AAB9D4B-ED14-4484-9298-5F1C31218E8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AAB9D4B-ED14-4484-9298-5F1C31218E8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {09C330D2-B1E7-47D9-AA43-72A12F47613E}
+	EndGlobalSection
+EndGlobal
