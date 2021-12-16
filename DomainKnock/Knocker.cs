@@ -72,27 +72,27 @@ internal class Knocker
         for (ipIndex = sip, scanned = 0; ipIndex <= eip; ipIndex++, scanned++)
         {
             IPAddress address = new(BitConverter.GetBytes(ipIndex).Reverse().ToArray());
-            var addr = address.ToString();
-            if (addr.EndsWith("0") || addr.EndsWith("255")) continue;
+            var addressStr = address.ToString();
+            if (addressStr.EndsWith("0") || addressStr.EndsWith("255")) continue;
             
             try
             {
-                _logger.LogTrace($"Scanning {addr}:80 to host {_opts.Hostname}.");
+                _logger.LogTrace($"{address.Prefix(80)} Scanning host {_opts.Hostname}.");
                 await ScanAsync(address, false);
             }
             catch (Exception ex)
             {
-                _logger.LogTrace($"Failed to scan {addr}: {ex.Message}", ex);
+                _logger.LogTrace($"{address.Prefix(80)} Failed to scan {addressStr}: {ex.Message}", ex);
             }
 
             try
             {
-                _logger.LogTrace($"Scanning {addr}:443 to host {_opts.Hostname}.");
+                _logger.LogTrace($"{address.Prefix(443)} Scanning host {_opts.Hostname} with SSL.");
                 await ScanAsync(address, true);
             }
             catch (Exception ex)
             {
-                _logger.LogTrace($"Failed to scan {addr}: {ex.Message}", ex);
+                _logger.LogTrace($"{address.Prefix(443)} Failed to scan {addressStr}: {ex.Message}", ex);
             }
         }
 
@@ -113,6 +113,6 @@ internal class Knocker
             stream = ssl;
         }
 
-        await _handler.RequestAsync(stream, isHttps, source.Token);
+        await _handler.RequestAsync(stream, isHttps, address, (ushort) (isHttps ? 443 : 80), source.Token);
     }
 }

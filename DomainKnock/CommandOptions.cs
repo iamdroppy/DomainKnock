@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
+using CommandLine.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -21,6 +23,9 @@ internal class CommandOptions
     public string Origin { get; set; }
     [Option('d', "destination", HelpText = "End IP address.", Required = true)]
     public string Destination { get; set; }
+
+    [Option('a', "user-agent", HelpText = "User-Agent ('DomainKnock' default)")]
+    public string UserAgent { get; set; } = "DomainKnock";
 
     [Option('t', "timeout", HelpText = "Timeout in seconds (15 default)")]
     public int TimeoutSeconds { get; set; } = 15;

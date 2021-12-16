@@ -22,7 +22,7 @@ internal class InitialTcpConnection
     {
         TcpClient client = new();
         await client.ConnectAsync(ip, port, token);
-        _logger.LogDebug($"Tcp connected ({ip.ToString()}:{port})");
+        _logger.LogDebug($"{ip.Prefix(port)} Tcp connected");
         return client;
     }
 }

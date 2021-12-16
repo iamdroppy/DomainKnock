@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Net;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 
 namespace DomainKnock;
@@ -17,28 +18,28 @@ internal class HttpHandler
         _opts = opts;
     }
 
-    public async Task RequestAsync(Stream stream, bool isHttps, CancellationToken token = default)
+    public async Task RequestAsync(Stream stream, bool isHttps, IPAddress address, ushort port, CancellationToken token = default)
     {
         using var reader = new StreamReader(stream, leaveOpen: true);
         await using var writer = new StreamWriter(stream, leaveOpen: true);
 
-        _logger.LogTrace("Streams opened, writing...");
+        _logger.LogTrace($"{address.Prefix(port)} Streams opened, writing...");
         await writer.WriteAsync($"GET {(isHttps ? "https" : "http")}://{_opts.Hostname}/ HTTP/1.1\r\n");
         await writer.WriteAsync($"Host: {_opts.Hostname}\r\n");
-        await writer.WriteAsync($"User-Agent: Mozilla Firefox\r\n");
+        await writer.WriteAsync($"User-Agent: {_opts.UserAgent}\r\n");
         await writer.WriteAsync($"\r\n");
         await writer.FlushAsync();
-        _logger.LogTrace("Reading...");
+        _logger.LogTrace($"{address.Prefix(port)} Reading stream...");
 
         var line = await reader.ReadToEndAsync();
         var title = Regex.Match(line, "<title>(.+)</title>", RegexOptions.Multiline);
         if (title.Success)
         {
-            _logger.LogInformation("Server responded with title: " + title.Groups[1].ToString());
+            _logger.LogInformation($"{address.Prefix(port)} Server responded with title: " + title.Groups[1].ToString());
         }
         else
         {
-            _logger.LogInformation("Server responded with: " + line);
+            _logger.LogInformation($"{address.Prefix(port)} Server responded with: " + line);
         }
 
         try
