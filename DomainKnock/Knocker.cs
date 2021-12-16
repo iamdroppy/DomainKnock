@@ -61,8 +61,7 @@ internal class Knocker
                 try
                 {
                     await Task.Delay(TimeSpan.FromSeconds(_opts.ProgressDelay), overwatchToken.Token);
-                    var p = (currentIpIndex * 100) / eip;
-                    _logger.LogDebug($"Scanning {p}% (scanned {scanned} hosts) - elapsed {watcher.Elapsed}");
+                    _logger.LogDebug($"Scanned {scanned} hosts - elapsed {watcher.Elapsed}");
                 }
                 catch (OperationCanceledException){ }
                 // ReSharper enable AccessToModifiedClosure
