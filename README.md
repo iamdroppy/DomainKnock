@@ -38,3 +38,4 @@ docker run -it domain-knock/latest --help
    - [ ] Custom ports (currently hardcoded as 80/443)
    - [ ] Custom user-agent
    - [ ] Custom headers (currently only the "required" and "most used" ones)
+   - [ ] Better output
