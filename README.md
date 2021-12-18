@@ -34,7 +34,8 @@ docker run --rm -it domain-knock/latest --help
 
 # 🔖 Usage
 
-```-v, --verbose           Verbosity Level (0 = Info, 1 = Debug, 2 = Trace)
+```
+  -v, --verbose           Verbosity Level (0 = Info, 1 = Debug, 2 = Trace)
 
   -h, --hostname          Required. The hostname the IP(s) should respond to.
 
