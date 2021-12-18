@@ -57,6 +57,7 @@ Timespan settings:
 
 Protocol settings:
   --agent                 User-Agent passed via Headers (Default: 'DomainKnock')
+  --http2                 Attempts to write HTTP/2 instead of HTTP/1.1. THIS IS NOT THE SOLUTION FOR HTTP/2, rather a bypass for **some** reverse proxies.
   ```
 *❗Tip 1: using --cli without any other arguments will give you the option to write commands inside the CLI, which is helpful if you are doing many small commands.*
 
@@ -120,3 +121,4 @@ docker run --rm -it -e USE_CLI=1 domain-knock/latest
    - [ ] Multitasking scan
    - [ ] Custom headers (currently, it is hardcoded with HTTP's most required headers by webservers)
    - [ ] Better output
+   - [ ] HTTP/2 and HTTP/3 - currently --http2 attempts to write HTTP/2 instead of HTTP/1.1. WHICH IS NOT THE SOLUTION FOR HTTP/2, rather a bypass for **some** reverse proxies.
