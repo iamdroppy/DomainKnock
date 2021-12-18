@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿#define CLI
+using System.Reflection;
 using DomainKnock;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -65,6 +66,9 @@ async Task RunAsync(params string[] arguments)
 
 bool UseCli()
 {
+#if CLI
+    return true;
+#endif
     var useCliEnv = Environment.GetEnvironmentVariable("USE_CLI");
     if (useCliEnv == null)
         return false;

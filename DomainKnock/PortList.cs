@@ -154,7 +154,7 @@ internal readonly struct PortList : IEquatable<PortList>, IEnumerable<ushort>
     public override bool Equals(object? obj) => obj is PortList other && Equals(other);
     public override int GetHashCode() => HashCode.Combine(nameof(PortList), _ports, IsValid);
     
-    public IEnumerator<ushort> GetEnumerator() => _ports.GetEnumerator();
+    public IEnumerator<ushort> GetEnumerator() => (_ports ?? Enumerable.Empty<ushort>()).GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 

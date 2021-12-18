@@ -50,23 +50,32 @@ internal class Knocker
 #pragma warning disable CS4014
         // this is a small "cron" to watch over progress.
         CancellationTokenSource watcherToken = new();
-        Task.Run(async () =>
+        if (_opts.ProgressDelay > 0)
         {
-            while (!watcherToken.IsCancellationRequested)
+            Task.Run(async () =>
             {
-                // ReSharper disable AccessToModifiedClosure
-                var currentIpIndex = ipIndex;
-
-                if (currentIpIndex == 0) continue;
-                try
+                while (!watcherToken.IsCancellationRequested)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(_opts.ProgressDelay), watcherToken.Token);
-                    _logger.LogDebug($"Scanned {scanned} hosts - elapsed {watcher.Elapsed}");
+                    // ReSharper disable AccessToModifiedClosure
+                    var currentIpIndex = ipIndex;
+
+                    if (currentIpIndex == 0) continue;
+                    try
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(_opts.ProgressDelay), watcherToken.Token);
+                        _logger.LogDebug($"Scanned {scanned} hosts - elapsed {watcher.Elapsed}");
+                    }
+                    catch (OperationCanceledException)
+                    {
+                    }
+                    // ReSharper enable AccessToModifiedClosure
                 }
-                catch (OperationCanceledException){ }
-                // ReSharper enable AccessToModifiedClosure
-            }
-        });
+            });
+        }
+        else
+        {
+            _logger.LogWarning("Progress watching has been turned off, this might make you blind to watch the current progress.");
+        }
 #pragma warning restore CS4014
 
         PortList http = _opts.HttpPorts;
@@ -82,7 +91,7 @@ internal class Knocker
             _logger.LogTrace("Http Ports: " + http);
         if (https)
             _logger.LogTrace("Https Ports: " + https);
-
+        _logger.LogDebug($"Total {((eip - sip + 1) * (http.Count() + https.Count()))} TCP connections to be made in {(eip - sip + 1)} host(s).");
         for (ipIndex = sip, scanned = 0; ipIndex <= eip; ipIndex++, scanned++)
         {
             IPAddress address = new(BitConverter.GetBytes(ipIndex).Reverse().ToArray());

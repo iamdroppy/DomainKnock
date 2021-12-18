@@ -37,8 +37,8 @@ internal class CommandOptions
     public int TimeoutSeconds { get; set; } = 5;
 
     [Option('d', "progress-delay",
-        HelpText = "Delay (in seconds) between each progress scanning message. (Default: 30)")]
-    public int ProgressDelay { get; set; } = 30;
+        HelpText = "Delay (in seconds) between each progress scanning message. 0 to disable. (Default: 30)")]
+    public uint ProgressDelay { get; set; } = 30;
 
     [Option("agent", HelpText = "User-Agent passed via Headers (Default: 'DomainKnock')")]
     public string UserAgent { get; set; } = "DomainKnock";
