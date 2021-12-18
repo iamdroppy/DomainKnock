@@ -33,10 +33,10 @@ internal class CommandOptions
     [Option("https-ports", HelpText = "Https (HTTP over SSL) Ports (e.g. '443,8443-8449')", Group = "Ports")]
     public string HttpsPorts { get; set; } = "";
 
-    [Option('t', "timeout", HelpText = "Timeout (in seconds) of each TCP connection and protocol negotiation (Default: 15)")]
-    public int TimeoutSeconds { get; set; } = 15;
+    [Option('t', "timeout", HelpText = "Timeout (in seconds) of each TCP connection and protocol negotiation (Default: 5)")]
+    public int TimeoutSeconds { get; set; } = 5;
 
-    [Option("progress-delay",
+    [Option('d', "progress-delay",
         HelpText = "Delay (in seconds) between each progress scanning message. (Default: 30)")]
     public int ProgressDelay { get; set; } = 30;
 
