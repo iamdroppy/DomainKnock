@@ -35,48 +35,79 @@ docker run --rm -it domain-knock/latest --help
 # 🔖 Usage
 
 ```
+Tool:
   -v, --verbose           Verbosity Level (0 = Info, 1 = Debug, 2 = Trace)
+  --help                  Display the help screen.
+  --version               Display version information.
 
+Bruteforce settings:
   -h, --hostname          Required. The hostname the IP(s) should respond to.
 
+IP settings:
   --from                  Required. Start IP address. Use only this argument if you want to check a single IP Address
-
   --to                    End IP address. Use only --from if you want to check a single IP Address
 
+Port settings (you can choose one or pick both):
   --http-ports            (Group: Ports) Http Ports (e.g. '80,8080-8099,9090-9100')
-
   --https-ports           (Group: Ports) Https (HTTP over SSL) Ports (e.g. '443,8443-8449')
 
+Timespan settings:
   -t, --timeout           Timeout (in seconds) of each TCP connection and protocol negotiation (Default: 5)
-
   -d, --progress-delay    Delay (in seconds) between each progress scanning message. 0 to disable. (Default: 30)
 
+Protocol settings:
   --agent                 User-Agent passed via Headers (Default: 'DomainKnock')
-
-  --help                  Display this help screen.
-
-  --version               Display version information.
   ```
-*❗tip: using --cli without any other arguments will give you the option to write commands inside the CLI, which is helpful if you are doing many small commands.*
+*❗Tip 1: using --cli without any other arguments will give you the option to write commands inside the CLI, which is helpful if you are doing many small commands.*
 
-## 🎀 Sample:
+*❗Tip 2: if you want to use a single IP instead of an IP-range, just use the --from argument, without the --to.*
+
+## 🎀 Scan arguments sample
 
 `-h google.com --from 10.0.0.0 --to 10.0.1.3 --http-ports 80,8080-8090 --https-ports 443,8443,9443 -d 5 -v 1`:
  - Scans from IP 10.0.0.0 until 10.0.1.3 *(IPs ending in .0 or .255 won't be scanned)*. For each IP, it will make, for each port, a HTTP connection. `80, 8080, 8081, ..., 8090`, and HTTP-over-SSL (https) ports `443, 8443, 9443`.
- - It will set the progress-delay to 5, meaning every 5 seconds you will receive a message stating where you are in progress (i.e. how many hosts you've already scanned).
- - Finally, the **-v** will give you the verbosity level which ranges from 0 to 2.
+ - **-d** will set the progress-delay to 5, meaning every 5 seconds a log will be shown stating where you are in progress (i.e. how many hosts you've already scanned).
+ - **-v** will set the verbosity level, which ranges from 0 to 2.
 
-### 🧱 Port list format:
+### 🧱 Port list format
 The port format is as follows: 10-20,30,40-60
-Results in the following: all ports from: 10 to 20, 30, and 40 to 60.
 
+Results in the following: all ports from: 10 to 20, 30, and 40 to 60.
+```
+Input: 10-20,30,40-60
+
+10 to 20 **(10 ports)** + 30 **(1 port)** + 40 to 60 **(20 ports)**
+```
 ### 🧭 Verbosity levels
 
-(each level includes everything from the level above, and so on).
+Each level inherits logs from the verbosity below.
 
- - Info (*-v 0 or default*): quiet mode. Logs only when you've made a successful connection and some simple information like the title of the page or the result.
- - Debug (*-v 1*): non-blind mode. Logs when you've made any progress and shows semi-vital information such as when a TCP connection has been made (before the actual protocol/ssl negotiation).
  - Trace (*-v 2*): show-all mode. Logs everything, even when writing/reading from the TCP stream.
+ - Debug (*-v 1*): non-blind mode. Logs when you've made any progress and shows semi-vital information such as when a TCP connection has been made (before the actual protocol/ssl negotiation).
+ - Info (*-v 0 or default*): quiet mode. Logs only when you've made a successful connection and some simple information like the title of the page or the result.
+
+### ⌨️ CLI mode
+
+The CLI mode allows you to write the command-line arguments without having to restart the binary every time. When the scan finishes, it will prompt you again to type another command, and so on.
+
+So instead of:
+```
+user@localhost> knocker --some --arguments
+user@localhost> knocker --some --other --scan
+```
+
+The behaviour is the same with the CLI mode, but it will keep the application alive:
+```
+user@localhost> knocker --cli
+> --some --arguments
+> --some --other --scan
+>
+```
+
+On the example above, it uses the argument --cli, but you can also define USE_CLI=1 or USE_CLI=true on your Environment Variables. Docker sample:
+```bash
+docker run --rm -it -e USE_CLI=1 domain-knock/latest
+```
 
 # 📗 Changelog
 
