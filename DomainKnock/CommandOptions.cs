@@ -32,6 +32,9 @@ internal class CommandOptions
     [Option("agent", HelpText = "User-Agent passed via Headers (Default: 'DomainKnock')")]
     public string UserAgent { get; set; } = "DomainKnock";
 
+    [Option("http2", HelpText = "[BETA] Tries to request using HTTP/2. Warning: the protocol still not implemented, so a Bad Request or similar might be thrown.")]
+    public bool RequestAsHttp2 { get; set; }
+
     public static CommandOptions? Parse(string[] args)
     {
         CommandOptions opts = null;

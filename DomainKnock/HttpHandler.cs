@@ -24,7 +24,7 @@ internal class HttpHandler
         await using var writer = new StreamWriter(stream, leaveOpen: true);
 
         _logger.LogTrace($"{address.Prefix(port)} Streams opened, writing...");
-        await writer.WriteAsync($"GET {(isHttps ? "https" : "http")}://{_opts.Hostname}/ HTTP/1.1\r\n");
+        await writer.WriteAsync($"GET {(isHttps ? "https" : "http")}://{_opts.Hostname}/ HTTP/{(_opts.RequestAsHttp2 ? "2" : "1.1")}\r\n");
         await writer.WriteAsync($"Host: {_opts.Hostname}\r\n");
         await writer.WriteAsync($"User-Agent: {_opts.UserAgent}\r\n");
         await writer.WriteAsync($"\r\n");
