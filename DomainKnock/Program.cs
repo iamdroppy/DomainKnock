@@ -1,5 +1,4 @@
-﻿#define CLI
-using System.Reflection;
+﻿using System.Reflection;
 using DomainKnock;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
