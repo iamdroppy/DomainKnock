@@ -43,16 +43,16 @@ internal class Knocker
 
         Stopwatch watcher = new Stopwatch();
         watcher.Start();
-        _logger.LogInformation($"Scanning {eip - sip} IP Addresses");
+        _logger.LogInformation($"Scanning {(1 + eip - sip)} IP Addresses");
 
         uint ipIndex = 0;
         uint scanned = 0;
 #pragma warning disable CS4014
         // this is a small "cron" to watch over progress.
-        CancellationTokenSource overwatchToken = new();
+        CancellationTokenSource watcherToken = new();
         Task.Run(async () =>
         {
-            while (!overwatchToken.IsCancellationRequested)
+            while (!watcherToken.IsCancellationRequested)
             {
                 // ReSharper disable AccessToModifiedClosure
                 var currentIpIndex = ipIndex;
@@ -60,7 +60,7 @@ internal class Knocker
                 if (currentIpIndex == 0) continue;
                 try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(_opts.ProgressDelay), overwatchToken.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(_opts.ProgressDelay), watcherToken.Token);
                     _logger.LogDebug($"Scanned {scanned} hosts - elapsed {watcher.Elapsed}");
                 }
                 catch (OperationCanceledException){ }
@@ -69,42 +69,68 @@ internal class Knocker
         });
 #pragma warning restore CS4014
 
+        PortList http = _opts.HttpPorts;
+        PortList https = _opts.HttpsPorts;
+
+        if (!http && !https)
+        {
+            throw new ArgumentException(
+                "You must specify the argument --http-ports and/or --https-ports. Use --help for more information.");
+        }
+
+        if (http)
+            _logger.LogTrace("Http Ports: " + http);
+        if (https)
+            _logger.LogTrace("Https Ports: " + https);
+
         for (ipIndex = sip, scanned = 0; ipIndex <= eip; ipIndex++, scanned++)
         {
             IPAddress address = new(BitConverter.GetBytes(ipIndex).Reverse().ToArray());
             var addressStr = address.ToString();
-            if (addressStr.EndsWith("0") || addressStr.EndsWith("255")) continue;
-            
-            try
+            if (addressStr.EndsWith(".0") || addressStr.EndsWith(".255")) continue;
+
+            if (http)
             {
-                _logger.LogTrace($"{address.Prefix(80)} Scanning host {_opts.Hostname}.");
-                await ScanAsync(address, false);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogTrace($"{address.Prefix(80)} Failed to scan {addressStr}: {ex.Message}", ex);
+                foreach (var port in http)
+                {
+                    try
+                    {
+                        _logger.LogTrace($"{address.Prefix(port)} Searching for host {_opts.Hostname}.");
+                        await ScanAsync(address, false, port);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogTrace($"{address.Prefix(port)} Failed to scan {addressStr}: {ex.Message}", ex);
+                    }
+                }
             }
 
-            try
+            if (https)
             {
-                _logger.LogTrace($"{address.Prefix(443)} Scanning host {_opts.Hostname} with SSL.");
-                await ScanAsync(address, true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogTrace($"{address.Prefix(443)} Failed to scan {addressStr}: {ex.Message}", ex);
+                foreach (var port in https)
+                {
+                    try
+                    {
+                        _logger.LogTrace($"{address.Prefix(port)} Searching for host {_opts.Hostname}.");
+                        await ScanAsync(address, true, port);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogTrace($"{address.Prefix(port)} Failed to scan {addressStr}: {ex.Message}", ex);
+                    }
+                }
             }
         }
 
-        overwatchToken.Cancel(); 
+        watcherToken.Cancel(); 
         watcher.Stop();
         _logger.LogInformation($"Took {watcher.Elapsed.ToString()} to complete scan.");
     }
 
-    private async Task ScanAsync(IPAddress address, bool isHttps)
+    private async Task ScanAsync(IPAddress address, bool isHttps, ushort port)
     {
         CancellationTokenSource source = new CancellationTokenSource(TimeSpan.FromSeconds(_opts.TimeoutSeconds));
-        var client = await _initialTcpConnection.ConnectAsync(address, (ushort) (isHttps ? 443 : 80), source.Token);
+        var client = await _initialTcpConnection.ConnectAsync(address, port, source.Token);
         Stream stream = client.GetStream();
         if (isHttps)
         {
@@ -113,6 +139,6 @@ internal class Knocker
             stream = ssl;
         }
 
-        await _handler.RequestAsync(stream, isHttps, address, (ushort) (isHttps ? 443 : 80), source.Token);
+        await _handler.RequestAsync(stream, isHttps, address, port, source.Token);
     }
 }

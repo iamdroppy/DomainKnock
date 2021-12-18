@@ -6,10 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	  <Version>1.2.0</Version>
-	  <Authors>Lucca Faria Ferri</Authors>
-	  <RepositoryUrl>https://github.com/iamdroppy/DomainKnocker</RepositoryUrl>
-	  <RepositoryType>git</RepositoryType>
+	  <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
