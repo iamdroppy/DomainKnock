@@ -17,7 +17,7 @@ docker build . --tag domain-knock/latest
 
 Running
 ```bash
-docker run -it domain-knock/latest --help
+docker run --rm -it domain-knock/latest --help
 ```
 
 ## Usage
