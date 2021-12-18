@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Net;
+﻿using System.Net;
 using System.Reflection;
 using System.Text;
 
@@ -10,7 +9,6 @@ public static class Extensions
     public static string Prefix(this IPAddress address, ushort port) => $"[{address}:{port}] ~";
 
     public static uint ToReadableFormat(this IPAddress address) => BitConverter.ToUInt32(address.GetAddressBytes().Reverse().ToArray());
-    public static byte[] ToUtf8(this string str) => Encoding.UTF8.GetBytes(str);
     public static Version GetVersion(this Assembly? assembly) => assembly?.GetName()?.Version ?? new Version(1, 0, 0);
     public static bool SplitIfContains(this string input, string pattern, out string[] result)
     {

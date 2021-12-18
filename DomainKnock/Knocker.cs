@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Security;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace DomainKnock;
