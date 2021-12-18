@@ -22,7 +22,7 @@ public static class Extensions
         return false;
     }
 
-    public static string[] SplitAlways(this string input, string pattern) => input.SplitIfContains(pattern, out var result) ? result : new string[] { input };
+    public static string[] SplitOrArray(this string input, string pattern) => input.SplitIfContains(pattern, out var result) ? result : new string[] { input };
 
     public static string Exclude(this string input, params char[] chars) 
         => chars.Aggregate(input, (current, chr) 

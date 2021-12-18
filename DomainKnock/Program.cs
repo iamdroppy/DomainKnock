@@ -67,7 +67,13 @@ bool UseCli()
 {
 #if CLI
     return true;
-#endif
+#else
+    if (args.Any(s => s == "--cli"))
+    {
+        Console.WriteLine("CLI argument has been provided - all the other arguments has been ignored.");
+        return true;
+    }
+
     var useCliEnv = Environment.GetEnvironmentVariable("USE_CLI");
     if (useCliEnv == null)
         return false;
@@ -76,6 +82,7 @@ bool UseCli()
     if (Int32.TryParse(useCliEnv, out var res) && res == 1)
         return true;
     return false;
+#endif
 }
 
 if (UseCli())
@@ -91,7 +98,7 @@ if (UseCli())
             PrintBanner();
         }
         else
-            await RunAsync(input.SplitAlways(" "));
+            await RunAsync(input.SplitOrArray(" "));
     }
 }
 else
